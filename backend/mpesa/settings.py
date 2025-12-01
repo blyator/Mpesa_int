@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-^opurli9y-c8np8vhixfw4c%es0t*@^!q)c6m8i0=v&aoxeyox
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'kyler-unwrung-umbrageously.ngrok-free.dev',
+]
+
 
 
 # Application definition
@@ -124,3 +129,15 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+# M-Pesa Configuration
+MPESA_ENVIRONMENT = os.getenv("MPESA_ENVIRONMENT", "sandbox")
+MPESA_CONSUMER_KEY = os.getenv("MPESA_CONSUMER_KEY")
+MPESA_CONSUMER_SECRET = os.getenv("MPESA_CONSUMER_SECRET")
+MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE")
+MPESA_PASSKEY = os.getenv("MPESA_PASSKEY")
+MPESA_BASE_URL = os.getenv("MPESA_BASE_URL")

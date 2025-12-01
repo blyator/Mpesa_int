@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from payments.views import InitiateSTKPush, MpesaCallback
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('stkpush/', InitiateSTKPush.as_view(), name='stkpush'),
+    path('api/payments/callback/', MpesaCallback.as_view(), name='mpesa_callback'),
 ]
