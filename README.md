@@ -1,73 +1,140 @@
-# React + TypeScript + Vite
+# M-Pesa Payment Integration
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a full-stack application sowing how to integrate Safaricom's Lipa na M-Pesa STK Push  functionality using a Django backend and a React frontend.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **STK Push Initiation**: Users can enter a phone number and amount to trigger an M-Pesa payment prompt on their device.
+- **Real-time Status Updates**: The frontend can check the status of the transaction.
+- **Callback Handling**: The backend processes M-Pesa callbacks to verify successful or failed transactions.
+- **Transaction Logging**: Stores transaction details (Receipt number, Amount, Status) in a database.
 
-## React Compiler
+## Technologies Used
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- **React**: UI Library.
+- **TypeScript**: Static typing.
+- **Tailwind CSS**
 
-## Expanding the ESLint configuration
+### Backend
+- **Django 5**
+- **Django REST Framework**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js (v18 or higher)
+- Python (v3.10 or higher)
+- PostgreSQL (or any other Django-supported database)
+- Safaricom Developer Account (for API credentials)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd M-Pesa-Payment-Integration
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Backend Setup
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Navigate to the backend directory:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd backend
 ```
+
+Create and activate a virtual environment:
+
+```bash
+# Linux/macOS
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Windows
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+**Environment Configuration**:
+
+Create a `.env` file in the `backend/` directory with the following variables:
+
+```env
+
+DATABASE_URL=your db 
+
+# M-Pesa Credentials
+MPESA_CONSUMER_KEY=your_consumer_key
+MPESA_CONSUMER_SECRET=your_consumer_secret
+MPESA_PASSKEY=your_passkey
+MPESA_SHORTCODE=174379
+MPESA_BASE_URL=https://sandbox.safaricom.co.ke
+MPESA_CALLBACK_URL=https://your-domain.com/api/payments/callback/
+```
+
+> **Note**: For local development, use a tunneling service like `ngrok` to expose your localhost to the internet for the `MPESA_CALLBACK_URL`.
+
+Run migrations:
+
+```bash
+python manage.py migrate
+```
+
+Start the server:
+
+```bash
+python manage.py runserver
+```
+
+The backend runs on `http://localhost:8000` by default.
+
+### 3. Frontend Setup
+
+Navigate to the project root (if you are in `backend/`, go back one level):
+
+```bash
+cd ..
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+The frontend runs on `http://localhost:5173` by default.
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/stkpush/` | Initiates an STK Push request. Requires `amount` and `phone` in JSON body. |
+| `POST` | `/api/payments/callback/` | Receives payment status updates from Safaricom. |
+| `GET` | `/check-status/<checkout_request_id>/` | Checks the status of a specific transaction. |
+
+## Usage
+
+1.  Open the frontend application in your browser (`http://localhost:5173`).
+2.  Enter the amount and the M-Pesa phone number (format: `2547...`).
+3.  Click "Pay".
+4.  You should receive an STK Push prompt on your mobile device.
+5.  Enter your PIN to complete the transaction.
+6.  The application handles the callback and updates the transaction status in the database.
+
+## License
+
+[MIT](LICENSE)
