@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'kyler-unwrung-umbrageously.ngrok-free.dev',
+    'mpesa-fsug.onrender.com'
 ]
 
 
