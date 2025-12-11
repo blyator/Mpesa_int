@@ -10,7 +10,7 @@ def get_access_token():
     
     try:
         r = requests.get(api_URL, auth=(consumer_key, consumer_secret))
-        r.raise_for_status() # Check for HTTP errors
+        r.raise_for_status() 
         return r.json()['access_token']
     except Exception as e:
         print(f"Error generating access token: {e}")
